@@ -6,6 +6,7 @@
  * 必須掛在 :root —— statistics.component.ts:21 是用
  * getComputedStyle(document.documentElement) 讀的，掛在 :host 讀不到。
  */
+@import "tailwindcss";
 :root {
   /* 主色：森綠 */
   --app-forest: #29382f;
