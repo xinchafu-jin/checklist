@@ -1,0 +1,209 @@
+<main class="register-page">
+  <section class="register-shell" aria-labelledby="page-title">
+    <div class="register-intro">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">J</span>
+        <span class="brand__name">Jin Survey</span>
+      </div>
+
+      <div class="register-intro__copy">
+        <p class="eyebrow">開始你的第一份問卷</p>
+        <h1 id="page-title">
+          先建立帳號，
+          <span>再開始蒐集答案。</span>
+        </h1>
+        <p class="register-intro__description">
+          註冊後即可建立問卷、發佈連結，並在同一個工作區追蹤每一筆回覆。
+        </p>
+      </div>
+
+      <ol class="steps" aria-hidden="true">
+        <li>
+          <span class="steps__index">01</span>
+          <span class="steps__label">建立帳號</span>
+        </li>
+        <li>
+          <span class="steps__index">02</span>
+          <span class="steps__label">設計問卷</span>
+        </li>
+        <li>
+          <span class="steps__index">03</span>
+          <span class="steps__label">整理結果</span>
+        </li>
+      </ol>
+    </div>
+
+    <mat-card class="register-card" appearance="outlined">
+      <mat-card-content>
+        <div class="register-card__heading">
+          <p class="register-card__eyebrow">建立新帳號</p>
+          <h2 id="register-heading">開始使用</h2>
+          <p>填寫以下資料，完成後就能建立你的第一份問卷。</p>
+        </div>
+
+        <form
+          class="register-form"
+          [formGroup]="form"
+          (ngSubmit)="subForm()"
+          aria-labelledby="register-heading"
+          novalidate
+        >
+          <div class="form-field">
+            <label for="register-email">
+              電子郵件
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="register-email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="name@example.com"
+              required
+              [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
+              [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'register-email-error' : null"
+            >
+            @if (form.controls.email.touched) {
+              @if (form.controls.email.hasError('required')) {
+                <p class="field-error" id="register-email-error">請輸入電子郵件。</p>
+              } @else if (form.controls.email.hasError('email')) {
+                <p class="field-error" id="register-email-error">電子郵件格式不正確。</p>
+              }
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="register-password">
+              密碼
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="register-password"
+              type="password"
+              formControlName="password"
+              autocomplete="new-password"
+              placeholder="至少 6 個字元"
+              required
+              [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
+              [attr.aria-describedby]="form.controls.password.invalid && form.controls.password.touched ? 'register-password-error' : null"
+            >
+            @if (form.controls.password.touched) {
+              @if (form.controls.password.hasError('required')) {
+                <p class="field-error" id="register-password-error">請輸入密碼。</p>
+              } @else if (form.controls.password.hasError('minlength')) {
+                <p class="field-error" id="register-password-error">密碼至少需要 6 個字元。</p>
+              }
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="register-second-password">
+              確認密碼
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="register-second-password"
+              type="password"
+              formControlName="secondPassword"
+              autocomplete="new-password"
+              placeholder="請再輸入一次密碼"
+              required
+              [attr.aria-invalid]="(form.controls.secondPassword.invalid || form.hasError('passwordMismatch')) && form.controls.secondPassword.touched"
+              [attr.aria-describedby]="(form.controls.secondPassword.invalid || form.hasError('passwordMismatch')) && form.controls.secondPassword.touched ? 'register-second-password-error' : null"
+            >
+            @if (form.controls.secondPassword.touched) {
+              @if (form.controls.secondPassword.hasError('required')) {
+                <p class="field-error" id="register-second-password-error">請再輸入一次密碼。</p>
+              } @else if (form.controls.secondPassword.hasError('minlength')) {
+                <p class="field-error" id="register-second-password-error">密碼至少需要 6 個字元。</p>
+              } @else if (form.hasError('passwordMismatch')) {
+                <p class="field-error" id="register-second-password-error">兩次輸入的密碼不一致。</p>
+              }
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="register-name">
+                姓名
+                <span class="required-mark" aria-hidden="true">*</span>
+                <span class="visually-hidden">必填</span>
+              </label>
+              <input
+                id="register-name"
+                type="text"
+                formControlName="name"
+                autocomplete="name"
+                placeholder="請輸入姓名"
+                required
+                [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched"
+                [attr.aria-describedby]="form.controls.name.invalid && form.controls.name.touched ? 'register-name-error' : null"
+              >
+              @if (form.controls.name.invalid && form.controls.name.touched) {
+                <p class="field-error" id="register-name-error">請輸入姓名。</p>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="register-phone">
+                手機號碼
+                <span class="required-mark" aria-hidden="true">*</span>
+                <span class="visually-hidden">必填</span>
+              </label>
+              <input
+                id="register-phone"
+                type="tel"
+                formControlName="phone"
+                autocomplete="tel"
+                inputmode="numeric"
+                placeholder="09xxxxxxxx"
+                required
+                [attr.aria-invalid]="form.controls.phone.invalid && form.controls.phone.touched"
+                [attr.aria-describedby]="form.controls.phone.invalid && form.controls.phone.touched ? 'register-phone-error' : null"
+              >
+              @if (form.controls.phone.touched) {
+                @if (form.controls.phone.hasError('required')) {
+                  <p class="field-error" id="register-phone-error">請輸入手機號碼。</p>
+                } @else if (form.controls.phone.hasError('pattern')) {
+                  <p class="field-error" id="register-phone-error">請輸入 09 開頭的 10 碼號碼。</p>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="register-age">
+              年齡
+              <span class="optional-mark">選填</span>
+            </label>
+            <input
+              id="register-age"
+              type="number"
+              formControlName="age"
+              inputmode="numeric"
+              min="0"
+              max="120"
+              placeholder="可留白"
+            >
+          </div>
+
+          @if (registerError) {
+            <p class="register-error" role="alert">{{ registerError }}</p>
+          }
+
+          <button class="register-button" type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? '建立中…' : '建立帳號' }}
+          </button>
+
+          <div class="register-links">
+            <span>已經有帳號了？</span>
+            <a routerLink="/">前往登入</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</main>

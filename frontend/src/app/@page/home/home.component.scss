@@ -1,0 +1,224 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--app-paper);
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 200;
+  top: 8px;
+  left: 12px;
+  padding: 9px 12px;
+  border: 2px solid var(--app-paper-light);
+  border-radius: 2px;
+  background: var(--app-forest-deep);
+  color: var(--app-paper-light);
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 140ms ease;
+
+  &:focus {
+    transform: translateY(0);
+  }
+}
+
+.home-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--app-paper);
+}
+
+.app-header {
+  position: sticky;
+  z-index: 50;
+  top: 0;
+  border-bottom: 1px solid rgb(255 253 248 / 18%);
+  background: var(--app-forest);
+}
+
+.app-toolbar {
+  width: min(100%, 1440px);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 40px);
+  background: transparent;
+  color: var(--app-paper-light);
+}
+
+.home-brand {
+  display: grid;
+  gap: 2px;
+  min-width: max-content;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--app-paper-light);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 140ms ease;
+
+  &:hover {
+    background: rgb(255 253 248 / 8%);
+  }
+}
+
+.home-brand__name {
+  font-family: var(--app-font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.home-brand__note {
+  color: rgb(255 253 248 / 68%);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.app-navigation,
+.navigation-link {
+  display: flex;
+  align-items: center;
+}
+
+.app-navigation {
+  gap: 2px;
+  margin-left: auto;
+}
+
+.navigation-link {
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 2px;
+  color: rgb(255 253 248 / 70%);
+  font-size: 14px;
+  font-weight: 550;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+
+  &:hover {
+    background: rgb(255 253 248 / 8%);
+    color: var(--app-paper-light);
+  }
+
+  &.active {
+    background: var(--app-paper);
+    color: var(--app-forest-deep);
+  }
+}
+
+.account-menu-trigger {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  margin-left: 8px;
+  padding: 8px;
+  place-items: center;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: rgb(255 253 248 / 78%);
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+
+  svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+
+  &:hover {
+    background: rgb(255 253 248 / 8%);
+    color: var(--app-paper-light);
+  }
+}
+
+.home-brand:focus-visible,
+.navigation-link:focus-visible,
+.account-menu-trigger:focus-visible {
+  outline: 2px solid var(--app-paper-light);
+  outline-offset: 2px;
+}
+
+.app-content {
+  min-width: 0;
+  min-height: calc(100svh - 69px);
+  background: var(--app-paper);
+}
+
+@media (max-width: 760px) {
+  .app-toolbar {
+    display: grid;
+    min-height: auto;
+    grid-template-areas:
+      "brand account"
+      "navigation navigation";
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+    padding: 10px 14px 8px;
+    white-space: normal;
+  }
+
+  .home-brand {
+    grid-area: brand;
+    justify-self: start;
+  }
+
+  .app-navigation {
+    display: grid;
+    width: 100%;
+    grid-area: navigation;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding-top: 7px;
+    border-top: 1px solid rgb(255 253 248 / 16%);
+  }
+
+  .account-menu-trigger {
+    grid-area: account;
+    margin: 0;
+  }
+
+  .navigation-link {
+    justify-content: center;
+    min-height: 36px;
+  }
+
+  .app-content {
+    min-height: calc(100svh - 116px);
+  }
+}
+
+@media (max-width: 370px) {
+  .home-brand__note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-link,
+  .home-brand,
+  .account-menu-trigger,
+  .navigation-link {
+    transition: none;
+  }
+}

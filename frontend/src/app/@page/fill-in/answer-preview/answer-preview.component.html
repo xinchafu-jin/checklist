@@ -1,0 +1,28 @@
+<div class="preview-panel">
+  <div mat-dialog-content class="preview-body">
+    <p class="preview-kicker">送出前確認</p>
+    <h1>{{ data.surveyTitle }}</h1>
+    <p class="preview-note">送出後就不能再修改，也不能重複作答。</p>
+
+    <ol class="preview-list">
+      @for (item of data.items; track item.questionNum) {
+        <li class="preview-item">
+          <p class="preview-question">
+            <span class="preview-num">{{ item.questionNum }}</span>
+            {{ item.title }}
+          </p>
+          @if (item.answered) {
+            <p class="preview-answer">{{ item.answerText }}</p>
+          } @else {
+            <p class="preview-answer preview-answer--empty">未作答</p>
+          }
+        </li>
+      }
+    </ol>
+  </div>
+
+  <div mat-dialog-actions class="preview-actions">
+    <button type="button" (click)="cancel()">返回修改</button>
+    <button type="button" class="submit-btn" (click)="confirm()">確認送出</button>
+  </div>
+</div>

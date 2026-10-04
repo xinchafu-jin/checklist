@@ -1,0 +1,104 @@
+<main class="login-page">
+  <section class="login-shell" aria-labelledby="page-title">
+    <div class="login-intro">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">J</span>
+        <span class="brand__name">Jin Survey</span>
+      </div>
+
+      <div class="login-intro__copy">
+        <p class="eyebrow">你的問卷工作空間</p>
+        <h1 id="page-title">
+          讓每一份回覆，
+          <span>成為清楚的下一步。</span>
+        </h1>
+        <p class="login-intro__description">
+          從建立問卷到整理結果，在同一個工作區掌握每一段調查流程。
+        </p>
+      </div>
+
+      <div class="workflow" aria-hidden="true">
+        <p class="workflow__question">今天，想了解什麼？</p>
+        <div class="workflow__answers">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <mat-card class="login-card" appearance="outlined">
+      <mat-card-content>
+        <div class="login-card__heading">
+          <p class="login-card__eyebrow">回到工作區</p>
+          <h2 id="login-heading">歡迎回來</h2>
+          <p>請登入你的帳號，繼續管理問卷。</p>
+        </div>
+
+        <form
+          class="login-form"
+          [formGroup]="form"
+          (ngSubmit)="login()"
+          aria-labelledby="login-heading"
+          novalidate
+        >
+          <div class="form-field">
+            <label for="login-account">
+              電子郵件
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="login-account"
+              type="email"
+              formControlName="account"
+              autocomplete="username"
+              placeholder="name@example.com"
+              required
+              [attr.aria-invalid]="form.controls.account.invalid && form.controls.account.touched"
+              [attr.aria-describedby]="form.controls.account.invalid && form.controls.account.touched ? 'login-account-error' : null"
+            >
+            @if (form.controls.account.invalid && form.controls.account.touched) {
+              <p class="field-error" id="login-account-error">請輸入電子郵件。</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="login-password">
+              密碼
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="login-password"
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="請輸入密碼"
+              required
+              [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
+              [attr.aria-describedby]="form.controls.password.invalid && form.controls.password.touched ? 'login-password-error' : null"
+            >
+            @if (form.controls.password.invalid && form.controls.password.touched) {
+              <p class="field-error" id="login-password-error">請輸入密碼。</p>
+            }
+          </div>
+
+          @if (loginError) {
+            <p class="login-error" role="alert">{{ loginError }}</p>
+          }
+
+          <button class="login-button" type="submit" [disabled]="isSubmitting">
+            {{isSubmitting? '登入中..' : '登入'}}
+          </button>
+
+          <div class="login-links">
+            <a routerLink="/reset-password">忘記密碼</a>
+            <span class="login-links__divider" aria-hidden="true"></span>
+            <a routerLink="/register">建立帳號</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</main>

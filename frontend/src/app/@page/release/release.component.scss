@@ -1,0 +1,194 @@
+:host {
+  display: block;
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.release-page {
+  width: min(calc(100% - 32px), 640px);
+  margin: 40px auto;
+  padding: clamp(28px, 5vw, 48px);
+  border: 1px solid var(--app-line-strong);
+  border-radius: 3px;
+  background: var(--app-paper-light);
+  box-shadow: 0 1px 2px rgba(41, 56, 47, 0.04),
+    0 12px 30px -18px rgba(41, 56, 47, 0.16);
+
+  h1 {
+    margin: 0 0 10px;
+    color: var(--app-forest);
+    font-family: var(--app-font-display);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  .description {
+    max-width: 52ch;
+    margin: 0 0 6px;
+    color: var(--app-muted);
+    font-size: 15px;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .date-range {
+    margin: 0 0 28px;
+    color: var(--app-clay);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+  }
+
+  .question {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--app-line);
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+
+    .question-title {
+      margin: 0 0 12px;
+      color: var(--app-ink);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 4px;
+      list-style: none;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        color: var(--app-ink);
+        font-size: 14px;
+        line-height: 1.6;
+
+        input[type="checkbox"],
+        input[type="radio"] {
+          accent-color: var(--app-forest);
+        }
+
+        input[type="text"] {
+          flex: 1;
+          min-width: 0;
+          height: 40px;
+          padding: 0 12px;
+          border: 1px solid var(--app-line-strong);
+          border-radius: 2px;
+          outline: none;
+          background: var(--app-paper-light);
+          color: var(--app-ink);
+          font: inherit;
+          transition: border-color 150ms ease;
+
+          &:hover {
+            border-color: var(--app-forest);
+          }
+
+          &:focus-visible {
+            border-color: var(--app-forest);
+            outline: 2px solid var(--app-forest);
+            outline-offset: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  button {
+    height: 44px;
+    margin-top: 20px;
+    margin-right: 10px;
+    padding: 0 24px;
+    border: 1px solid var(--app-line-strong);
+    border-radius: 2px;
+    outline: none;
+    background: var(--app-paper-light);
+    color: var(--app-ink);
+    font: inherit;
+    font-weight: 650;
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 120ms ease;
+
+    &:hover {
+      border-color: var(--app-forest);
+      background: var(--app-paper);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--app-forest);
+      outline-offset: 2px;
+    }
+  }
+
+  .submit-btn {
+    border-color: var(--app-forest);
+    background: var(--app-forest);
+    color: var(--app-paper-light);
+
+    &:hover {
+      border-color: var(--app-forest-deep);
+      background: var(--app-forest-deep);
+      color: var(--app-paper-light);
+    }
+
+    &:focus-visible {
+      outline-color: var(--app-forest);
+    }
+  }
+}
+
+/* 發佈失敗訊息：留在原地，使用者修正後可直接重試 */
+.release-error {
+  margin: 20px 0 0;
+  color: var(--app-clay);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* 「請自行關閉視窗」這類補充說明 */
+.release-note {
+  margin: 12px 0 0;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+/* 載入中／載入失敗：整頁狀態 */
+.release-state {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 48px 0;
+  color: var(--app-muted);
+
+  h1 {
+    color: var(--app-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .release-page button,
+  .release-page input[type="text"] {
+    transition: none;
+  }
+}

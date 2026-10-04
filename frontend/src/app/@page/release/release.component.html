@@ -1,0 +1,58 @@
+<div class="release-page">
+  @if (survey) {
+    <!-- mat-dialog-content 讓題目多的時候在彈窗內捲動，按鈕列不會被推出去 -->
+    <div mat-dialog-content class="release-body">
+      <h1>{{ survey.title }}</h1>
+      <p class="description">{{ survey.description }}</p>
+      <p class="date-range">{{ survey.startDate }} ～ {{ survey.endDate }}</p>
+
+      @if (survey.questions) {
+        @for (question of survey.questions; track $index) {
+          <div class="question">
+            <p class="question-title">{{ question.title }}</p>
+            <ul>
+              @if (question.type === 'MULTI') {
+                @for (opt of question.options; track opt.optionCode) {
+                  <li><input type="checkbox"> {{ opt.optionText }}</li>
+                }
+              }
+              @if (question.type === 'SINGLE') {
+                @for (opt of question.options; track opt.optionCode) {
+                  <li><input type="radio">{{ opt.optionText }}</li>
+                }
+              }
+              @if (question.type === 'TEXT') {
+                @for (opt of question.options; track opt.optionCode) {
+                  <li>{{ opt.optionText }}<input type="text"></li>
+                }
+              }
+            </ul>
+          </div>
+        }
+      }
+
+      @if (errorMessage) {
+        <p class="release-error" role="alert">{{ errorMessage }}</p>
+      }
+    </div>
+
+    <div mat-dialog-actions class="release-actions">
+      <button type="button" (click)="close()">取消</button>
+      <button type="button" class="submit-btn"
+              [disabled]="isSubmitting"
+              (click)="goRelease()">
+        {{ isSubmitting ? '發佈中' : '發佈' }}
+      </button>
+    </div>
+
+  } @else if (loadError) {
+    <div class="release-state" role="alert">
+      <h1>找不到這份問卷</h1>
+      <p>{{ loadError }}</p>
+      <!-- 彈窗沒有導覽列，唯一的出口就是關掉它 -->
+      <button type="button" (click)="close()">關閉</button>
+    </div>
+  } @else {
+    <p class="release-state">載入中…</p>
+  }
+</div>

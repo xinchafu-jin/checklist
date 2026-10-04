@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.preview-panel {
+  background: var(--app-paper-light);
+}
+
+.preview-body {
+  padding: clamp(24px, 4vw, 36px);
+}
+
+.preview-kicker {
+  margin: 0 0 6px;
+  color: var(--app-clay);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+h1 {
+  margin: 0 0 8px;
+  color: var(--app-forest);
+  font-family: var(--app-font-display);
+  font-size: clamp(24px, 3.4vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.preview-note {
+  margin: 0 0 24px;
+  color: var(--app-muted);
+  font-size: 14px;
+}
+
+.preview-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preview-item {
+  padding: 16px 0;
+  border-top: 1px solid var(--app-line);
+
+  &:last-child {
+    border-bottom: 1px solid var(--app-line);
+  }
+}
+
+.preview-question {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 8px;
+  color: var(--app-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.preview-num {
+  flex: none;
+  color: var(--app-clay);
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-answer {
+  /* 對齊題號右邊的文字起點：題號寬度 + gap */
+  margin: 0 0 0 26px;
+  color: var(--app-forest);
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;   /* 簡答題的換行要保留 */
+  word-break: break-word;
+}
+
+.preview-answer--empty {
+  color: var(--app-muted);
+  font-style: italic;
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px clamp(24px, 4vw, 36px);
+  border-top: 1px solid var(--app-line);
+
+  button {
+    padding: 10px 22px;
+    border: 1px solid var(--app-line-strong);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--app-ink);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--app-paper);
+    }
+  }
+
+  .submit-btn {
+    border-color: var(--app-forest);
+    background: var(--app-forest);
+    color: var(--app-paper-light);
+
+    &:hover {
+      background: var(--app-forest-deep);
+    }
+  }
+}

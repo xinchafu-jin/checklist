@@ -1,0 +1,468 @@
+:host {
+  --forest: var(--app-forest);
+  --forest-deep: var(--app-forest-deep);
+  --paper: var(--app-paper);
+  --paper-light: var(--app-paper-light);
+  --ink: var(--app-ink);
+  --muted: var(--app-muted);
+  --clay: var(--app-clay);
+  --line: var(--app-line);
+
+  display: block;
+  color: var(--ink);
+  font-family: var(--app-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 只給螢幕閱讀器，視覺上隱藏但不被 display:none 排除在無障礙樹外 */
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.register-page {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(18px, 3vw, 36px);
+  place-items: center;
+  background: var(--forest-deep);
+}
+
+.register-shell {
+  display: grid;
+  width: min(100%, 1180px);
+  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.92fr);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 3px;
+  background: var(--paper);
+  box-shadow: 0 24px 64px rgb(10 18 13 / 28%);
+}
+
+/* ============================ 左欄：品牌敘事 ============================ */
+
+.register-intro {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: clamp(38px, 5vw, 68px);
+  background: var(--forest);
+  color: #f8f1e5;
+}
+
+/* 極淡的暖色光暈，避免大面積純色顯得平板 */
+.register-intro::after {
+  position: absolute;
+  background: radial-gradient(
+    circle at 22% 18%,
+    rgb(233 198 178 / 45%),
+    transparent 62%
+  );
+  content: "";
+  inset: 0;
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.register-intro > * {
+  position: relative;
+  z-index: 1;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand__mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgb(248 241 229 / 55%);
+  border-radius: 50%;
+  font-family: var(--app-font-display);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.brand__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.register-intro__copy {
+  max-width: 520px;
+  margin: auto 0;
+  padding: 60px 0 52px;
+}
+
+.eyebrow,
+.register-card__eyebrow {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.eyebrow {
+  color: #d9b7a6;
+}
+
+.register-intro h1 {
+  margin: 0;
+  font-family: var(--app-font-display);
+  font-size: clamp(40px, 4.6vw, 62px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.16;
+}
+
+.register-intro h1 span {
+  display: block;
+  color: #e7c6b6;
+}
+
+.register-intro__description {
+  max-width: 440px;
+  margin: 26px 0 0;
+  color: #c9d1cb;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.steps {
+  width: min(100%, 360px);
+  padding: 22px 0 0;
+  border-top: 1px solid rgb(248 241 229 / 20%);
+  margin: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: flex;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid rgb(248 241 229 / 12%);
+  gap: 16px;
+}
+
+.steps li:last-child {
+  border-bottom: 0;
+}
+
+.steps__index {
+  color: #d9b7a6;
+  font-family: var(--app-font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.steps__label {
+  color: #e5ddd1;
+  font-size: 14px;
+}
+
+/* ============================ 右欄：表單卡 ============================ */
+
+.register-card {
+  display: grid;
+  min-width: 0;
+  padding: clamp(40px, 5vw, 72px) clamp(32px, 4.5vw, 68px);
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+  place-items: center;
+}
+
+.register-card mat-card-content {
+  width: 100%;
+  max-width: 420px;
+  padding: 0;
+}
+
+.register-card__heading {
+  margin-bottom: 34px;
+}
+
+.register-card__eyebrow {
+  color: var(--clay);
+}
+
+.register-card__heading h2 {
+  margin: 0 0 10px;
+  font-family: var(--app-font-display);
+  font-size: clamp(32px, 3.4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.register-card__heading > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.register-form {
+  display: grid;
+  gap: 20px;
+}
+
+/* 姓名與手機並排，縮短表單縱向長度 */
+.form-row {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-field {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
+}
+
+.form-field label {
+  display: flex;
+  align-items: baseline;
+  color: #4e5952;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.optional-mark {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.form-field input {
+  width: 100%;
+  height: 52px;
+  padding: 0 15px;
+  border: 1px solid #8f8578;
+  border-radius: 2px;
+  outline: none;
+  background: var(--paper-light);
+  color: var(--ink);
+  font: inherit;
+  transition: border-color 160ms ease;
+}
+
+.form-field input::placeholder {
+  color: #6d746e;
+}
+
+.form-field input:hover {
+  border-color: #756d62;
+}
+
+.form-field input:focus-visible {
+  border-color: #486b57;
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+
+.form-field input[aria-invalid="true"] {
+  border-color: var(--app-danger);
+}
+
+.required-mark,
+.field-error,
+.register-error {
+  color: var(--app-danger);
+}
+
+.field-error,
+.register-error {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.register-error {
+  padding: 10px 12px;
+  border-left: 3px solid var(--app-danger);
+  background: rgb(168 65 47 / 8%);
+}
+
+.register-button {
+  height: 52px;
+  margin-top: 5px;
+  border: 1px solid var(--forest);
+  border-radius: 2px;
+  background: var(--forest);
+  color: #fffdf8;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  transition: background-color 160ms ease, transform 120ms ease;
+}
+
+.register-button:hover:not(:disabled) {
+  background: #344a3d;
+}
+
+.register-button:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.register-button:focus-visible {
+  outline: 3px solid var(--clay);
+  outline-offset: 3px;
+}
+
+.register-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.register-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 14px;
+  gap: 8px;
+
+  a {
+    color: var(--forest);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--clay);
+      outline-offset: 3px;
+    }
+  }
+}
+
+/* ============================ 進場動效 ============================ */
+
+.register-intro__copy,
+.steps,
+.register-card__heading,
+.register-form {
+  animation: rise 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.register-intro__copy {
+  animation-delay: 60ms;
+}
+
+.steps {
+  animation-delay: 140ms;
+}
+
+.register-card__heading {
+  animation-delay: 100ms;
+}
+
+.register-form {
+  animation-delay: 180ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-intro__copy,
+  .steps,
+  .register-card__heading,
+  .register-form {
+    animation: none;
+  }
+
+  .register-button {
+    transition: background-color 160ms ease;
+  }
+}
+
+/* ============================ 響應式 ============================ */
+
+@media (max-width: 980px) {
+  .register-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .register-page {
+    padding: 0;
+    place-items: start stretch;
+    background: var(--paper);
+  }
+
+  .register-shell {
+    min-height: 100svh;
+    grid-template-columns: 1fr;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .register-intro {
+    padding: 28px clamp(22px, 7vw, 52px) 34px;
+  }
+
+  .register-intro__copy {
+    padding: 36px 0 4px;
+  }
+
+  .register-intro h1 {
+    font-size: clamp(34px, 8vw, 50px);
+  }
+
+  .register-intro__description {
+    margin-top: 20px;
+  }
+
+  .steps {
+    display: none;
+  }
+
+  .register-card {
+    padding: 42px clamp(22px, 7vw, 52px) 48px;
+  }
+
+  .register-card__heading {
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

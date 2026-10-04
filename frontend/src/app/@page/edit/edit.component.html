@@ -1,0 +1,296 @@
+<section class="survey-builder" aria-labelledby="builder-title">
+  <header class="builder-header">
+    <p class="builder-header__section">問卷編輯器</p>
+    <div>
+      <h1 id="builder-title">建立一份好回答的問卷</h1>
+      <p>先寫下想了解的事情，再依序安排題目與選項。</p>
+    </div>
+  </header>
+
+  <div class="builder-workspace">
+    @if (!loaded) {
+      @if (loadError) {
+        <div class="builder-state" role="alert">
+          <h2>找不到這份問卷</h2>
+          <p>{{ loadError }}</p>
+          <a class="button" routerLink="/home/mySurvey">回我的問卷</a>
+        </div>
+      } @else {
+        <p class="builder-state">載入中…</p>
+      }
+    } @else {
+    <section class="editor-panel" aria-labelledby="editor-title">
+      <form class="survey-form" [formGroup]="form" (ngSubmit)="subForm()">
+        <div class="survey-basics">
+          <div class="section-heading">
+            <div>
+              <p class="section-heading__index" aria-hidden="true">01</p>
+              <h2 id="editor-title">問卷內容</h2>
+            </div>
+            <p>必填欄位以星號標示</p>
+          </div>
+
+          <div class="form-field">
+            <label for="survey-title">
+              問卷名稱
+              <span class="required-mark" aria-hidden="true">*</span>
+              <span class="visually-hidden">必填</span>
+            </label>
+            <input
+              id="survey-title"
+              formControlName="title"
+              type="text"
+              placeholder="例如：課程回饋問卷"
+              required
+              [attr.aria-invalid]="form.controls.title.invalid && form.controls.title.touched"
+              [attr.aria-describedby]="form.controls.title.invalid && form.controls.title.touched ? 'survey-title-error' : null"
+            />
+            @if (form.controls.title.invalid && form.controls.title.touched) {
+              <p class="field-error" id="survey-title-error">請填寫問卷名稱。</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="survey-introduction">簡介</label>
+            <textarea
+              id="survey-introduction"
+              formControlName="description"
+              rows="4"
+              placeholder="簡單說明這份問卷的用途，讓填答者知道為什麼而答。"
+            ></textarea>
+          </div>
+
+          <div class="form-field">
+            <label for="survey-start-date">開始日期</label>
+            <input
+              id="survey-start-date"
+              type="date"
+              formControlName="startDate"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="survey-end-date">結束日期</label>
+            <input
+              id="survey-end-date"
+              type="date"
+              formControlName="endDate"
+            />
+          </div>
+
+        </div>
+
+        <div class="question-toolbar">
+          <div class="question-toolbar__heading">
+            <span class="section-heading__index" aria-hidden="true">02</span>
+            <div>
+              <p class="question-toolbar__title">題目清單</p>
+              <p>依照填答順序排列，可隨時新增或刪除。</p>
+            </div>
+          </div>
+          <button class="button button--secondary" type="button" (click)="addQuestion()">
+            新增題目
+          </button>
+        </div>
+
+        <div class="questions" formArrayName="questions">
+          @if (questionsArray.length === 0) {
+            <div class="questions-empty">
+              <p>目前還沒有題目。從「新增題目」開始。</p>
+            </div>
+          }
+
+          @for (control of questionsArray.controls;
+            track $index;
+            let qIndex = $index) {
+            <article
+              class="question-block"
+              [formGroupName]="$index"
+              [attr.aria-labelledby]="'question-heading-' + qIndex"
+            >
+              <header class="question-block__header">
+                <div class="question-number" aria-hidden="true">
+                  {{ (qIndex + 1).toString().padStart(2, "0") }}
+                </div>
+                <h3 [id]="'question-heading-' + qIndex">
+                  第 {{ qIndex + 1 }} 題
+                </h3>
+                <label class="required-toggle">
+                  <input type="checkbox" formControlName="isRequired"/>
+                  <span>必填</span>
+                </label>
+                <button
+                  class="text-button text-button--danger"
+                  type="button"
+                  (click)="removeQuestion($index)"
+                  [attr.aria-label]="'刪除第 ' + (qIndex + 1) + ' 題'"
+                >
+                  刪除題目
+                </button>
+              </header>
+
+              <div class="question-grid">
+                <div class="form-field">
+                  <label [attr.for]="'question-title-' + qIndex">
+                    題目
+                    <span class="required-mark" aria-hidden="true">*</span>
+                    <span class="visually-hidden">必填</span>
+                  </label>
+                  <input
+                    [id]="'question-title-' + qIndex"
+                    type="text"
+                    formControlName="title"
+                    placeholder="請輸入問題"
+                    required
+                    [attr.aria-invalid]="control.get('title')?.invalid && control.get('title')?.touched"
+                    [attr.aria-describedby]="control.get('title')?.invalid && control.get('title')?.touched ? 'question-title-error-' + qIndex : null"
+                  />
+                  @if (control.get("title")?.invalid && control.get("title")?.touched) {
+                    <p class="field-error" [id]="'question-title-error-' + qIndex">
+                      請填寫題目內容。
+                    </p>
+                  }
+                </div>
+
+                <div class="form-field form-field--type">
+                  <label [attr.for]="'question-type-' + qIndex">回答方式</label>
+                  <select
+                    [id]="'question-type-' + qIndex"
+                    formControlName="type"
+                    (change)="onQuestionTypeChange(qIndex)"
+                  >
+                    <option value="">請選擇題型</option>
+                    <option value="TEXT">簡答</option>
+                    <option value="SINGLE">單選題</option>
+                    <option value="MULTI">多選題</option>
+                  </select>
+                </div>
+              </div>
+
+              @if (control.get("type")?.value === "TEXT") {
+                <div class="answer-preview">
+                  <label [attr.for]="'text-preview-' + qIndex">
+                    簡答欄位預覽
+                    <span>此處輸入不會儲存</span>
+                  </label>
+                  <input
+                    [id]="'text-preview-' + qIndex"
+                    type="text"
+                    placeholder="填答者會在這裡輸入"
+                  />
+                </div>
+              }
+
+              @if (control.get("type")?.value === "MULTI" ||
+              control.get("type")?.value === "SINGLE") {
+                <section
+                  class="option-editor"
+                  [attr.aria-label]="
+                    control.get('type')?.value === 'SINGLE'
+                      ? '單選選項'
+                      : '多選選項'
+                  "
+                >
+                  <div class="option-editor__heading">
+                    <div>
+                      <h4>
+                        {{
+                          control.get("type")?.value === "SINGLE"
+                            ? "單選選項"
+                            : "多選選項"
+                        }}
+                      </h4>
+                      <p>
+                        {{
+                          control.get("type")?.value === "SINGLE"
+                            ? "填答者只能選擇一個答案。"
+                            : "填答者可以選擇一個以上的答案。"
+                        }}
+                      </p>
+                    </div>
+                    <button
+                      class="text-button"
+                      type="button"
+                      (click)="addOption($index)"
+                    >
+                      {{
+                        control.get("type")?.value === "SINGLE"
+                          ? "新增單選選項"
+                          : "新增複選選項"
+                      }}
+                    </button>
+                  </div>
+
+                  <div class="option-list" formArrayName="options">
+                    @for (option of getOption($index).controls;
+                      track $index;
+                      let optionIndex = $index) {
+                      <div class="option-row" [formGroupName]="optionIndex">
+                        <button
+                          class="option-remove"
+                          type="button"
+                          (click)="removeOption(qIndex, optionIndex)"
+                          [attr.aria-label]="'刪除第 ' + (optionIndex + 1) + ' 個選項'"
+                          title="刪除選項"
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18"/>
+                          </svg>
+                        </button>
+                        <input
+                          class="option-row__control"
+                          [type]="
+                            control.get('type')?.value === 'SINGLE'
+                              ? 'radio'
+                              : 'checkbox'
+                          "
+                          disabled
+                          aria-hidden="true"
+                        />
+                        <input
+                          class="option-row__text"
+                          [id]="'option-' + qIndex + '-' + optionIndex"
+                          type="text"
+                          formControlName="optionText"
+                          [placeholder]="'選項 ' + (optionIndex + 1)"
+                          [attr.aria-label]="'選項 ' + (optionIndex + 1)"
+                          [attr.aria-invalid]="option.get('optionText')?.invalid && option.get('optionText')?.touched"
+                        />
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+            </article>
+          }
+        </div>
+
+        <footer class="form-actions">
+          <div class="form-actions__note">
+            <p>送出後會回到「我的問卷」。</p>
+            @if (errorMessage) {
+              <p class="field-error" role="alert">{{ errorMessage }}</p>
+            }
+          </div>
+          <div class="form-actions__buttons">
+            <button
+              class="button button--secondary"
+              type="button"
+              routerLink="/home/mySurvey"
+            >
+              取消
+            </button>
+            <button
+              class="button button--primary"
+              type="submit"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? '儲存中…' : '儲存問卷' }}
+            </button>
+          </div>
+        </footer>
+      </form>
+    </section>
+    }
+  </div>
+</section>

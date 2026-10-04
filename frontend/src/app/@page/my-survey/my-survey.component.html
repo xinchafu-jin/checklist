@@ -1,0 +1,432 @@
+<section class="my-survey-page" aria-labelledby="my-survey-title">
+  <header class="page-header">
+    <div class="page-header__title">
+      <p class="page-kicker">你的問卷工作簿</p>
+      <h1 id="my-survey-title">我的問卷</h1>
+      <p>依目前進度整理你建立的每一份問卷。</p>
+    </div>
+
+  </header>
+
+  <section class="survey-tool-window" aria-labelledby="survey-list-title">
+    <header class="tool-window__header">
+      <div>
+        <span class="section-index" aria-hidden="true">01</span>
+        <h2 id="survey-list-title">問卷列表</h2>
+      </div>
+      <div class="tool-window__actions">
+        <div class="tool-actions">
+          @if (!selectMode) {
+            <button
+              type="button"
+              class="icon-btn"
+              (click)="toggleSelectMode()"
+              title="刪除問卷"
+              aria-label="刪除問卷"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h16M9 7V4.5h6V7M6.5 7l.9 12.2a1 1 0 0 0 1 .8h7.2a1 1 0 0 0 1-.8L17.5 7M10 11v6M14 11v6"/>
+              </svg>
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="icon-btn"
+              (click)="exitSelectMode()"
+              title="取消"
+              aria-label="取消"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="icon-btn icon-btn--danger"
+              (click)="askDelete()"
+              title="確認刪除"
+              aria-label="確認刪除"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7"/>
+              </svg>
+            </button>
+          }
+        </div>
+        <button
+          class="create-survey-button"
+          type="button"
+          routerLink="/home/customSurvey"
+        >
+          建立問卷
+        </button>
+      </div>
+    </header>
+
+    @if (pendingDelete) {
+      <div class="delete-confirm" role="alertdialog" aria-label="確認刪除">
+        <p>
+          確定要刪除已勾選的 <strong>{{ selectIds.size }}</strong> 份問卷嗎？此動作無法復原。
+        </p>
+        <div class="delete-confirm__actions">
+          <button type="button" (click)="cancelDelete()">取消</button>
+          <button type="button" class="delete-confirm__danger"
+                  [disabled]="isDeleting"
+                  (click)="confirmDelete()">
+            {{ isDeleting ? '刪除中' : '確定刪除' }}
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (deleteError) {
+      <p class="delete-error" role="alert">{{ deleteError }}</p>
+    }
+
+    @if (loadError) {
+      <p class="delete-error" role="alert">{{ loadError }}</p>
+    }
+
+    <mat-tab-group class="survey-tabs">
+      <mat-tab label="正在創建（{{ saving.data.length }}）">
+        <div class="tab-panel">
+          <div class="survey-table-panel">
+            <div
+              class="survey-table-scroll"
+              tabindex="0"
+              aria-label="正在創建的問卷，可左右捲動"
+            >
+              <table
+                mat-table
+                [dataSource]="saving"
+                class="survey-table"
+                aria-label="正在創建的問卷"
+              >
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>編號</th>
+                  <td mat-cell *matCellDef="let element">
+                    @if (selectMode) {
+                      <input
+                        type="checkbox"
+                        [checked]="selectIds.has(element.id)"
+                        (change)="toggleSelectOne(element.id, $any($event.target).checked)"
+                      >
+                    } @else {
+                      {{ element.id }}
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>問卷名稱</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="survey-name">{{ element.title }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="updateAt">
+                  <th mat-header-cell *matHeaderCellDef>最後更新</th>
+                  <td mat-cell *matCellDef="let element">
+                    <time [attr.datetime]="element.updatedAt">
+                      {{ element.updatedAt | date: 'yyyy-MM-dd HH:mm' }}
+                    </time>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>操作</th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="row-actions">
+                      <a
+                        class="action-btn"
+                        [routerLink]="['/home/edit',element.id]"
+                        rel="noopener"
+                        title="編輯"
+                        aria-label="編輯"
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.83-2.83L5 17.2V20z"/>
+                          <path d="M14 7l3 3"/>
+                        </svg>
+                      </a>
+                      <button
+                        class="action-btn action-btn--publish"
+                        type="button"
+                        (click)="openRelease(element.id)"
+                        title="發佈"
+                        aria-label="發佈"
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M21 3L11 13M21 3l-6.5 18-4-8-8-4L21 3z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                  [class.row--selected]="selectMode && selectIds.has(row.id)"
+                ></tr>
+              </table>
+            </div>
+
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              class="survey-paginator"
+              aria-label="正在創建問卷分頁"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="尚未開始（{{ underway.data.length }}）">
+        <div class="tab-panel">
+          <div class="survey-table-panel">
+            <div
+              class="survey-table-scroll"
+              tabindex="0"
+              aria-label="尚未開始的問卷可左右捲動"
+            >
+              <table
+                mat-table
+                [dataSource]="underway"
+                class="survey-table"
+                aria-label="尚未開始的問卷"
+              >
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>編號</th>
+                  <td mat-cell *matCellDef="let element">
+                    @if (selectMode) {
+                      <input
+                        type="checkbox"
+                        [checked]="selectIds.has(element.id)"
+                        (change)="toggleSelectOne(element.id, $any($event.target).checked)"
+                      >
+                    } @else {
+                      {{ element.id }}
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>問卷名稱</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="survey-name">{{ element.title }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="star">
+                  <th mat-header-cell *matHeaderCellDef>開始日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.startDate }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="end">
+                  <th mat-header-cell *matHeaderCellDef>結束日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.endDate }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="underwayTitle"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: underwayTitle"
+                  [class.row--selected]="selectMode && selectIds.has(row.id)"
+                ></tr>
+              </table>
+            </div>
+
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              class="survey-paginator"
+              aria-label="尚未開始問卷分頁"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="進行中（{{ comingEnd.data.length }}）">
+        <div class="tab-panel">
+          <div class="survey-table-panel">
+            <div
+              class="survey-table-scroll"
+              tabindex="0"
+              aria-label="進行中的問卷可左右捲動"
+            >
+              <table
+                mat-table
+                [dataSource]="comingEnd"
+                class="survey-table"
+                aria-label="進行中的問卷"
+              >
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>編號</th>
+                  <td mat-cell *matCellDef="let element">
+                    @if (selectMode) {
+                      <input
+                        type="checkbox"
+                        [checked]="selectIds.has(element.id)"
+                        (change)="toggleSelectOne(element.id, $any($event.target).checked)"
+                      >
+                    } @else {
+                      {{ element.id }}
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>問卷名稱</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="survey-name">{{ element.title }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="star">
+                  <th mat-header-cell *matHeaderCellDef>開始日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.startDate }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="end">
+                  <th mat-header-cell *matHeaderCellDef>結束日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.endDate }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="result">
+                  <th mat-header-cell *matHeaderCellDef>統計結果</th>
+                  <td mat-cell *matCellDef="let element">
+                    <a
+                      class="stat-link"
+                      [routerLink]="['/home/statistics', element.id]"
+                      title="查看統計"
+                      aria-label="查看統計"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8"/>
+                        <path d="M12 12V4M12 12l6.9 4"/>
+                      </svg>
+                    </a>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="endedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: endedColumns"
+                  [class.row--selected]="selectMode && selectIds.has(row.id)"
+                ></tr>
+              </table>
+            </div>
+
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              class="survey-paginator"
+              aria-label="進行中問卷分頁"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="已結束（{{ endSurvey.data.length }}）">
+        <div class="tab-panel">
+          <div class="survey-table-panel">
+            <div
+              class="survey-table-scroll"
+              tabindex="0"
+              aria-label="已結束的問卷可左右捲動"
+            >
+              <table
+                mat-table
+                [dataSource]="endSurvey"
+                class="survey-table"
+                aria-label="已結束的問卷"
+              >
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>編號</th>
+                  <td mat-cell *matCellDef="let element">
+                    @if (selectMode) {
+                      <input
+                        type="checkbox"
+                        [checked]="selectIds.has(element.id)"
+                        (change)="toggleSelectOne(element.id, $any($event.target).checked)"
+                      >
+                    } @else {
+                      {{ element.id }}
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>問卷名稱</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="survey-name">{{ element.title }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="star">
+                  <th mat-header-cell *matHeaderCellDef>開始日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.startDate }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="end">
+                  <th mat-header-cell *matHeaderCellDef>結束日期</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.endDate }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="result">
+                  <th mat-header-cell *matHeaderCellDef>統計結果</th>
+                  <td mat-cell *matCellDef="let element">
+                    <a
+                      class="stat-link"
+                      [routerLink]="['/home/statistics', element.id]"
+                      title="查看統計"
+                      aria-label="查看統計"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8"/>
+                        <path d="M12 12V4M12 12l6.9 4"/>
+                      </svg>
+                    </a>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="endedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: endedColumns"
+                  [class.row--selected]="selectMode && selectIds.has(row.id)"
+                ></tr>
+              </table>
+            </div>
+
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              class="survey-paginator"
+              aria-label="已結束問卷分頁"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+</section>

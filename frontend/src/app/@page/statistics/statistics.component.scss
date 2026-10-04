@@ -1,0 +1,573 @@
+:host {
+  display: block;
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.statistics-page {
+  width: min(calc(100% - 32px), 1080px);
+  margin: 24px auto 64px;
+}
+
+/* ========== 頁首 ========== */
+
+.page-header {
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid var(--app-line-strong);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: var(--app-paper-light);
+
+  h1 {
+    margin: 5px 0 12px;
+    color: var(--app-forest);
+    font-family: var(--app-font-display);
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+  }
+
+  > p:last-child {
+    margin: 0;
+    color: var(--app-muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+.page-kicker {
+  margin: 0;
+  color: var(--app-clay);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+/* ========== 摘要列 ========== */
+
+.stat-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0 0 3px 3px;
+  background: var(--app-paper);
+}
+
+.stat-summary__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px clamp(22px, 3vw, 36px);
+  border-right: 1px solid var(--app-line);
+
+  &:last-child {
+    border-right: 0;
+  }
+}
+
+.stat-summary__label {
+  color: var(--app-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.stat-summary__value {
+  color: var(--app-forest);
+  font-family: var(--app-font-display);
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* ========== 題目卡 ========== */
+
+.question-sheets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.question-sheet {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(320px, 1.2fr);
+  overflow: hidden;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 3px;
+  background: var(--app-paper-light);
+}
+
+.question-sheet__side {
+  padding: clamp(22px, 3vw, 34px);
+  border-right: 1px solid var(--app-line);
+  background: var(--app-paper);
+}
+
+.question-sheet__title {
+  margin: 6px 0 0;
+  color: var(--app-forest);
+  font-family: var(--app-font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+.question-sheet__type {
+  margin: 8px 0 0;
+  color: var(--app-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.section-index {
+  color: var(--app-clay);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.question-sheet__chart {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(22px, 3vw, 34px);
+}
+
+/* ========== 圖例（單選題，放在左欄） ========== */
+
+.legend {
+  margin: 22px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--app-line);
+  list-style: none;
+}
+
+.legend__item {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  grid-template-columns: 10px 1fr auto;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--app-line);
+}
+
+/* 「未作答」不是一個選項，壓低存在感，避免跟真正的選項搶注意力 */
+.legend__item--muted .legend__text {
+  color: var(--app-muted);
+  font-style: italic;
+}
+
+.legend__key {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* 載入中／載入失敗的整頁狀態 */
+.tab-state {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 56px 0;
+  color: var(--app-muted);
+
+  h2 {
+    color: var(--app-ink);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+  }
+
+  .btn {
+    margin-top: 8px;
+    text-decoration: none;
+  }
+}
+
+.legend__text {
+  color: var(--app-ink);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.legend__value {
+  color: var(--app-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+/* ========== 圓餅圖 ========== */
+
+.pie-frame {
+  position: relative;
+  height: clamp(220px, 26vw, 280px);
+}
+
+.pie-frame canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ========== 長條圖 ==========
+   三欄 grid：標籤 / 軌道 / 數值。
+   欄寬由整個 ul 決定，所以每根長條的起點與滿格終點都在同一條垂直線上。 */
+
+.bars {
+  display: grid;
+  grid-template-columns: minmax(72px, max-content) 1fr max-content;
+  margin: 0;
+  padding: 0;
+  gap: 0 16px;
+  list-style: none;
+}
+
+.bars__row {
+  display: grid;
+  align-items: center;
+  gap: inherit;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--app-line);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.bars__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.bars__track {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 1px;
+  background: var(--app-line);
+}
+
+.bars__fill {
+  display: block;
+  height: 100%;
+  border-radius: 1px;
+  transition: width 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bars__value {
+  color: var(--app-ink);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  white-space: nowrap;
+
+  small {
+    margin-left: 6px;
+    color: var(--app-muted);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+/* ========== 簡答題 ========== */
+
+.answers {
+  max-height: 300px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.answers__item {
+  padding: 12px 14px;
+  border: 1px solid var(--app-line);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  background: var(--app-paper);
+  color: var(--app-ink);
+  font-size: 13px;
+  line-height: 1.65;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.empty-note {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+
+/* ========== 人員名冊 ========== */
+
+.submission-ledger {
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 12px;
+  background: var(--app-paper-light);
+  box-shadow: 0 1px 2px rgba(41, 56, 47, 0.04),
+    0 16px 40px -28px rgba(41, 56, 47, 0.2);
+}
+
+.submission-ledger__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(22px, 3vw, 32px);
+  border-bottom: 1px solid var(--app-line);
+  background: var(--app-paper);
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h2 {
+    color: var(--app-forest);
+    font-family: var(--app-font-display);
+    font-size: clamp(23px, 3vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  > p {
+    color: var(--app-muted);
+    font-size: 13px;
+  }
+}
+
+.submission-ledger__eyebrow {
+  margin-bottom: 5px !important;
+  color: var(--app-clay);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.submission-accordion {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+/*
+ * 展開清單原本只有一條硬邊框，攤開來像表格列。
+ * 換成極淡的紙感陰影，滑過或展開時才加深 —— 每一張都像一張攤開的
+ * 名片，而不是一格一格的儲存格。
+ */
+:host ::ng-deep .submission-panel.mat-expansion-panel {
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(41, 56, 47, 0.03);
+  border: 1px solid var(--app-line);
+  border-radius: 10px !important;
+  background: var(--app-paper-light);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+:host ::ng-deep .submission-panel.mat-expansion-panel:hover,
+:host ::ng-deep .submission-panel.mat-expanded {
+  border-color: var(--app-line-strong);
+  box-shadow: 0 10px 24px -18px rgba(41, 56, 47, 0.35);
+}
+
+:host ::ng-deep .submission-panel .mat-expansion-panel-header {
+  min-height: 72px;
+  padding: 0 18px;
+}
+
+:host ::ng-deep .submission-panel .mat-expansion-panel-header:hover,
+:host ::ng-deep .submission-panel.mat-expanded .mat-expansion-panel-header {
+  background: var(--app-table-hover);
+}
+
+:host ::ng-deep .submission-panel .mat-content {
+  align-items: center;
+  gap: 13px;
+}
+
+:host ::ng-deep .submission-panel .mat-expansion-panel-body {
+  padding: 0;
+}
+
+.submission-person__mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 50%;
+  background: var(--app-forest);
+  color: var(--app-paper-light);
+  font-family: var(--app-font-display);
+  font-size: 15px;
+  font-weight: 600;
+  place-items: center;
+}
+
+/*
+ * 全部同一色的圓章排在一起會像複印出來的一樣。
+ * 用既有色票輪流上色（不加新顏色），展開清單時一眼就能分開誰是誰。
+ */
+.submission-panel:nth-child(4n + 2) .submission-person__mark {
+  background: var(--app-clay);
+}
+
+.submission-panel:nth-child(4n + 3) .submission-person__mark {
+  background: var(--app-success);
+}
+
+.submission-panel:nth-child(4n) .submission-person__mark {
+  background: var(--app-forest-deep);
+}
+
+.submission-person {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.submission-person__email {
+  overflow: hidden;
+  color: var(--app-ink);
+  font-size: 14px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.submission-person__meta {
+  color: var(--app-muted);
+  font-family: "SF Mono", "JetBrains Mono", monospace;
+  font-size: 11px;
+}
+
+.submission-state {
+  margin-right: 16px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--app-table-accent);
+  color: var(--app-success);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.submission-answers {
+  display: grid;
+  padding: 0 18px 18px 62px;
+}
+
+.submission-answer {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 26px minmax(0, 1fr);
+  padding: 15px 0;
+  border-top: 1px solid var(--app-line);
+}
+
+.submission-answer__number {
+  color: var(--app-clay);
+  font-family: "SF Mono", "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.submission-answer h3,
+.submission-answer p {
+  margin: 0;
+}
+
+.submission-answer h3 {
+  color: var(--app-ink);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.submission-answer p {
+  margin-top: 4px;
+  color: var(--app-forest);
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.submission-answer p.submission-answer__value--empty {
+  color: var(--app-muted);
+  font-style: italic;
+}
+
+/* ========== RWD ========== */
+
+@media (max-width: 760px) {
+  .question-sheet {
+    grid-template-columns: 1fr;
+  }
+
+  .question-sheet__side {
+    border-right: 0;
+    border-bottom: 1px solid var(--app-line);
+  }
+}
+
+@media (max-width: 520px) {
+  .statistics-page {
+    width: calc(100% - 20px);
+    margin: 10px auto 40px;
+  }
+
+  .page-header {
+    padding: 26px 20px 28px;
+  }
+
+  .bars {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .bars__row {
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+  }
+
+  .bars__track {
+    grid-column: 1 / -1;
+  }
+
+  .submission-ledger__header {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  :host ::ng-deep .submission-panel .mat-expansion-panel-header {
+    min-height: 78px;
+    padding: 0 14px;
+  }
+
+  .submission-state {
+    display: none;
+  }
+
+  .submission-answers {
+    padding: 0 14px 14px;
+  }
+}

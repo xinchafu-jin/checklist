@@ -1,0 +1,160 @@
+/* You can add global styles to this file, and also import other style files */
+
+/*
+ * 全域 design token。
+ * 各頁面 SCSS（@page/**）與 statistics.component.ts 的 Chart.js 設定都靠這組變數配色，
+ * 必須掛在 :root —— statistics.component.ts:21 是用
+ * getComputedStyle(document.documentElement) 讀的，掛在 :host 讀不到。
+ */
+:root {
+  /* 主色：森綠 */
+  --app-forest: #29382f;
+  --app-forest-deep: #1f2c25;
+
+  /* 底色：紙 */
+  --app-paper: #f8f1e5;
+  --app-paper-light: #fffdf8;
+
+  /* 文字 */
+  --app-ink: #29312c;
+  --app-muted: #606a63;
+
+  /* 輔色：陶土 */
+  --app-clay: #985036;
+
+  /* 分隔線 */
+  --app-line: #e5ddd1;
+  --app-line-strong: #d5cabb;
+
+  /* 資料表：保持紙本溫度，不用冷灰色框線堆滿整頁 */
+  --app-table-head: #efe5d5;
+  --app-table-row: #fffdf8;
+  --app-table-hover: #f5eddf;
+  --app-table-accent: #edf3ec;
+
+  /* 語意色 */
+  --app-danger: #a8412f;
+  --app-success: #486b57;
+
+  /* 字體 */
+  --app-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    "Noto Serif TC", "Songti TC", serif;
+  --app-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei",
+    sans-serif;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+/*
+ * 問卷清單共用的「資料列」語言。
+ * 三個管理清單共用 survey-table；放在全域避免它們各自長成不同風格。
+ */
+body .survey-table {
+  border-collapse: separate;
+  border-spacing: 0 9px;
+  padding: 7px 12px;
+}
+
+body .survey-table th.mat-mdc-header-cell {
+  height: 44px;
+  border-bottom: 0;
+  background: var(--app-table-head);
+  color: var(--app-forest);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+body .survey-table th.mat-mdc-header-cell:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+body .survey-table th.mat-mdc-header-cell:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+/*
+ * 每一列改用陰影分隔，不再用硬邊框線把表格切成格線。
+ * 預設就有極淡的陰影（貼紙感），滑過去才加深 —— 資料表看起來像一疊
+ * 攤開的卡片，不是冷冰冰的試算表格線。
+ */
+body .survey-table td.mat-mdc-cell {
+  height: 64px;
+  border-top: 1px solid var(--app-line);
+  border-bottom: 1px solid var(--app-line);
+  background: var(--app-table-row);
+  color: var(--app-ink);
+  box-shadow: 0 1px 2px rgba(41, 56, 47, 0.03);
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+body .survey-table td.mat-mdc-cell:first-child {
+  border-left: 1px solid var(--app-line);
+  border-radius: 10px 0 0 10px;
+  color: var(--app-muted);
+  font-family: "SF Mono", "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+
+body .survey-table td.mat-mdc-cell:last-child {
+  border-right: 1px solid var(--app-line);
+  border-radius: 0 10px 10px 0;
+}
+
+body .survey-table tr.mat-mdc-row {
+  transition: transform 180ms ease;
+}
+
+body .survey-table tr.mat-mdc-row:hover td.mat-mdc-cell {
+  border-color: var(--app-line-strong);
+  background: var(--app-table-hover);
+  box-shadow: 0 10px 20px -16px rgba(41, 56, 47, 0.4);
+}
+
+body .survey-table tr.mat-mdc-row:hover {
+  transform: translateY(-1px);
+}
+
+body .survey-table .survey-name {
+  color: var(--app-forest-deep);
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+body .survey-table .stat-link {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 8px;
+  background: var(--app-table-accent);
+  color: var(--app-success);
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+body .survey-table .stat-link:hover {
+  background: var(--app-forest);
+  color: var(--app-paper-light);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .survey-table tr.mat-mdc-row,
+  body .survey-table td.mat-mdc-cell,
+  body .survey-table .stat-link {
+    transition: none;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--app-paper);
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

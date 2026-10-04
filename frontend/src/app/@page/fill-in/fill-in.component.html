@@ -1,0 +1,103 @@
+<main class="fill-doc">
+  @if (survey) {
+    <header class="doc-head">
+      <p class="doc-kicker">作答</p>
+      <h1>{{ survey.title }}</h1>
+      <p class="doc-lede">{{ survey.description }}</p>
+      <dl class="doc-meta">
+        <div>
+          <dt>期間</dt>
+          <dd>{{ survey.startDate }} — {{ survey.endDate }}</dd>
+        </div>
+        <div>
+          <dt>題數</dt>
+          <dd>{{ (survey.questions ?? []).length }}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="subForm()">
+      <div formArrayName="answers">
+        @for (q of survey.questions ?? []; track q.id; let qi = $index) {
+          <section class="question" [formGroupName]="qi" [style.--index]="qi">
+            <p class="question__index">{{ q.questionNum }}</p>
+
+            <div class="question__body">
+              <h2>
+                {{ q.title }}
+                @if (q.isRequired) {
+                  <span class="tag tag--required">必填</span>
+                }
+              </h2>
+
+              @if (q.type === "TEXT") {
+                <input
+                  type="text"
+                  class="answer-text"
+                  formControlName="ansText"
+                  placeholder="輸入你的回答"
+                />
+              }
+
+              @if (q.type === "SINGLE") {
+                <div class="options">
+                  @for (opt of q.options; track opt.id) {
+                    <label class="option">
+                      <input
+                        type="radio"
+                        formControlName="singleOption"
+                        [value]="opt.id"
+                      />
+                      <span>{{ opt.optionText }}</span>
+                    </label>
+                  }
+                </div>
+              }
+
+              @if (q.type === "MULTI") {
+                <div class="options" formArrayName="optionChecks">
+                  @for (opt of q.options; track opt.id; let oi = $index) {
+                    <label class="option">
+                      <input type="checkbox" [formControlName]="oi"/>
+                      <span>{{ opt.optionText }}</span>
+                    </label>
+                  }
+                  <p class="options__hint">可複選</p>
+                </div>
+              }
+
+              @if (showError(qi)) {
+                <p class="answer-error" role="alert">此題必填</p>
+              }
+            </div>
+          </section>
+        } @empty {
+          <p class="doc-empty">這份問卷還沒有題目。</p>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <p class="doc-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <footer class="doc-actions">
+        <p>送出後將無法修改。</p>
+        <button type="submit" class="btn" [disabled]="isSubmitting">
+          {{ isSubmitting ? "送出中" : "送出問卷" }}
+        </button>
+      </footer>
+    </form>
+  } @else if (loadError) {
+    <div class="doc-state" role="alert">
+      <h1>找不到這份問卷</h1>
+      <p>{{ loadError }}</p>
+      <a class="btn" routerLink="/home/surveyMenu">回問卷清單</a>
+    </div>
+  } @else {
+    <div class="doc-loading" aria-busy="true">
+      <div class="bar bar--title"></div>
+      <div class="bar"></div>
+      <div class="bar bar--short"></div>
+    </div>
+  }
+</main>

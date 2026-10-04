@@ -1,0 +1,375 @@
+:host {
+  display: block;
+  background: var(--app-paper);
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+
+  /* 只在本頁使用的等寬字（給題號與日期），不影響全域 token */
+  --doc-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Menlo", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 文件式容器：沒有卡片、沒有陰影，只有留白與髮絲線 */
+.fill-doc {
+  width: min(100% - 40px, 760px);
+  min-height: calc(100svh - 70px);
+  margin-inline: auto;
+  padding: clamp(56px, 11vw, 128px) 0 clamp(72px, 12vw, 140px);
+}
+
+/* ============================ 表頭 ============================ */
+
+.doc-kicker {
+  margin: 0 0 22px;
+  color: var(--app-clay);
+  font-family: var(--doc-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.doc-head h1 {
+  margin: 0;
+  color: var(--app-forest);
+  font: 600 clamp(34px, 5.6vw, 56px) / 1.1 var(--app-font-display);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.doc-lede {
+  max-width: 62ch;
+  margin: 24px 0 0;
+  color: var(--app-muted);
+  font-size: 15px;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 48px;
+  margin: 44px 0 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--app-line);
+  border-bottom: 1px solid var(--app-line);
+
+  div {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  dt {
+    color: var(--app-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--app-ink);
+    font-family: var(--doc-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================ 題目 ============================ */
+
+.question {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  padding: clamp(40px, 6vw, 64px) 0;
+  border-bottom: 1px solid var(--app-line);
+
+  /* 逐題淡入，延遲由 --index 決定 */
+  animation: doc-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--index, 0) * 60ms);
+}
+
+.question__index {
+  margin: 0;
+  padding-top: 4px;
+  color: var(--app-muted);
+  font-family: var(--doc-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.question__body h2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin: 0 0 24px;
+  color: var(--app-ink);
+  font: 500 20px / 1.5 var(--app-font-display);
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.tag {
+  padding: 3px 9px;
+  border-radius: 9999px;
+  border: 1px solid var(--app-line-strong);
+  color: var(--app-muted);
+  font-family: var(--doc-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.tag--required {
+  border-color: var(--app-clay);
+  color: var(--app-clay);
+}
+
+/* ============================ 輸入元件 ============================ */
+
+input,
+button {
+  font: inherit;
+}
+
+/* 底線式輸入框：文件感，不用方框 */
+.answer-text {
+  width: 100%;
+  padding: 10px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--app-line-strong);
+  outline: none;
+  background: transparent;
+  color: var(--app-ink);
+  font-size: 15px;
+  transition: border-color 200ms ease;
+
+  &::placeholder {
+    color: var(--app-muted);
+    opacity: 1;
+  }
+
+  &:hover {
+    border-bottom-color: var(--app-muted);
+  }
+
+  &:focus-visible {
+    border-bottom-color: var(--app-forest);
+  }
+
+  &.ng-invalid.ng-touched {
+    border-bottom-color: var(--app-danger);
+  }
+}
+
+/* 選項：純髮絲線分隔，沒有方框卡片 */
+.options {
+  display: grid;
+  border-top: 1px solid var(--app-line);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 2px;
+  border-bottom: 1px solid var(--app-line);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.6;
+  transition: color 200ms ease;
+
+  input {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    margin: 0;
+    accent-color: var(--app-forest);
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: var(--app-forest);
+  }
+
+  &:focus-within {
+    outline: 1px solid var(--app-forest);
+    outline-offset: 4px;
+  }
+
+  /* 選中的項目僅以字重與顏色表示，不加底色 */
+  &:has(input:checked) {
+    color: var(--app-forest);
+    font-weight: 600;
+  }
+}
+
+.options__hint {
+  margin: 12px 0 0;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.doc-empty {
+  margin: 0;
+  padding: 96px 0;
+  color: var(--app-muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ============================ 錯誤與送出 ============================ */
+
+.doc-error {
+  margin: 28px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--app-danger);
+  color: var(--app-danger);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: clamp(44px, 7vw, 72px);
+
+  p {
+    margin: 0;
+    color: var(--app-muted);
+    font-size: 13px;
+  }
+}
+
+.btn {
+  min-height: 46px;
+  padding: 0 28px;
+  border: 1px solid var(--app-forest);
+  border-radius: 4px;
+  background: var(--app-forest);
+  color: var(--app-paper-light);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition:
+    background-color 200ms ease,
+    transform 120ms ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-forest-deep);
+    background: var(--app-forest-deep);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--app-forest);
+    outline-offset: 4px;
+  }
+}
+
+/* ============================ 載入失敗 ============================ */
+
+.doc-state {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 64px 0;
+
+  h1 {
+    font-size: 26px;
+    letter-spacing: 0.02em;
+  }
+
+  p {
+    color: var(--app-muted);
+  }
+
+  .btn {
+    margin-top: 12px;
+    text-decoration: none;
+  }
+}
+
+/* ============================ 載入 ============================ */
+
+.doc-loading {
+  display: grid;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.bar {
+  height: 13px;
+  border-radius: 2px;
+  background: var(--app-line);
+  animation: doc-pulse 1.6s ease-in-out infinite;
+}
+
+.bar--title {
+  width: min(64%, 340px);
+  height: 44px;
+  margin-bottom: 16px;
+}
+
+.bar--short {
+  width: 42%;
+}
+
+@keyframes doc-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes doc-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question,
+  .bar {
+    animation: none;
+  }
+}
+
+/* ============================ 窄螢幕 ============================ */
+
+@media (max-width: 560px) {
+  .fill-doc {
+    width: calc(100% - 32px);
+  }
+
+  .question {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .doc-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

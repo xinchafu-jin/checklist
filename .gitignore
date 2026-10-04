@@ -1,0 +1,79 @@
+# ==========================================
+# 作業系統與系統暫存檔 (OS Files)
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==========================================
+# IDE 與編輯器設定檔 (IDEs & Editors)
+# ==========================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+*.sublime-workspace
+.project
+.classpath
+.settings/
+
+# ==========================================
+# AI 工具與輔助擴充產生的本地目錄
+# ==========================================
+.claude/
+.agents/
+.gemini/
+.junie/
+
+# ==========================================
+# 後端 (Java / Gradle)
+# ==========================================
+.gradle/
+**/build/
+!**/src/**/build/
+.gradletasknamecache
+gradle-app.setting
+
+# 保留 Gradle Wrapper 必要檔案
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# ==========================================
+# 前端 (Node.js / Angular)
+# ==========================================
+**/node_modules/
+**/dist/
+**/tmp/
+**/out-tsc/
+**/.angular/cache/
+
+# NPM / Yarn / pnpm 日誌
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 測試覆蓋率與暫存報告
+/coverage
+*.lcov
+.sass-cache/
+
+# ==========================================
+# 環境變數與機密檔案 (Environment & Secrets)
+# ==========================================
+*.env
+*.env.local
+*.env.*.local
+!*.env.example

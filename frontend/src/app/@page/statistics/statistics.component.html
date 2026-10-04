@@ -1,0 +1,205 @@
+<section class="statistics-page" aria-labelledby="statistics-title">
+  <header class="page-header">
+    <p class="page-kicker">統計結果</p>
+    <h1 id="statistics-title">{{ quizStat?.quizTitle || '載入中' }}</h1>
+    <p>依題目彙整所有填答者的作答分布。</p>
+  </header>
+  <mat-tab-group>
+    <mat-tab label="統計"> @if (quizStat) {
+      <div class="stat-summary">
+        <div class="stat-summary__cell">
+          <span class="stat-summary__label">總填答人數</span>
+          <span class="stat-summary__value">{{ quizStat.totalRespondents }}</span>
+        </div>
+        <div class="stat-summary__cell">
+          <span class="stat-summary__label">題目數</span>
+          <span class="stat-summary__value">{{ quizStat.questionStats.length }}</span>
+        </div>
+      </div>
+
+      <div class="question-sheets">
+        @for (q of quizStat.questionStats; track q.questionId) {
+          <article class="question-sheet">
+
+            <!-- 左欄：題目本體，單選題的色塊圖例也在這裡 -->
+            <div class="question-sheet__side">
+            <span class="section-index" aria-hidden="true">
+              {{ q.questionNum < 10 ? '0' + q.questionNum : q.questionNum }}
+            </span>
+              <h2 class="question-sheet__title">{{ q.questionTitle }}</h2>
+              <p class="question-sheet__type">
+                @switch (q.questionType) {
+                  @case ('SINGLE') {
+                    單選題
+                  }
+                  @case ('MULTI') {
+                    多選題
+                  }
+                  @default {
+                    簡答題
+                  }
+                }
+              </p>
+
+              @if (q.questionType === 'SINGLE' && q.optionStats) {
+                <ul class="legend">
+                  @for (o of q.optionStats; track o.optionId; let i = $index) {
+                    <li class="legend__item">
+                    <span class="legend__key"
+                          [style.background]="colorAt(i)"
+                          aria-hidden="true"></span>
+                      <span class="legend__text">{{ o.optionText }}</span>
+                      <span class="legend__value">
+                      {{ o.percentage | number:'1.0-1' }}%
+                    </span>
+                    </li>
+                  }
+                  <!-- 圓餅圖有這一塊，圖例就必須有，否則使用者看到不明的灰色扇形 -->
+                  @if (unansweredOf(q) > 0) {
+                    <li class="legend__item legend__item--muted">
+                    <span class="legend__key"
+                          [style.background]="unansweredColor"
+                          aria-hidden="true"></span>
+                      <span class="legend__text">未作答</span>
+                      <span class="legend__value">
+                      {{ unansweredPercent(q) | number:'1.0-1' }}%
+                    </span>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+
+            <!-- 右欄：圖表 -->
+            <div class="question-sheet__chart">
+
+              @if (q.questionType === 'SINGLE') {
+                @if (q.optionStats?.length) {
+                  <div class="pie-frame">
+                    <canvas #chartCanvas></canvas>
+                  </div>
+                } @else {
+                  <p class="empty-note">尚無作答資料。</p>
+                }
+              }
+
+              @if (q.questionType === 'MULTI') {
+                @if (q.optionStats?.length) {
+                  <!--
+                    長條用 CSS grid 畫：label / track / value 三欄。
+                    同一個 grid 的欄寬一致，所有長條的起點與終點自然對齊。
+                  -->
+                  <ul class="bars">
+                    @for (o of q.optionStats; track o.optionId; let i = $index) {
+                      <li class="bars__row">
+                      <span class="bars__label">
+                        <span class="legend__key"
+                              [style.background]="colorAt(i)"
+                              aria-hidden="true"></span>
+                        {{ o.optionText }}
+                      </span>
+                        <span class="bars__track">
+                        <span class="bars__fill"
+                              [style.width.%]="o.percentage"
+                              [style.background]="colorAt(i)"></span>
+                      </span>
+                        <span class="bars__value">
+                        {{ o.selectedCount }}
+                          <small>{{ o.percentage | number:'1.0-1' }}%</small>
+                      </span>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <p class="empty-note">尚無作答資料。</p>
+                }
+              }
+
+              @if (q.questionType === 'TEXT') {
+                @if (q.textAnswers?.length) {
+                  <ul class="answers">
+                    @for (text of q.textAnswers; track $index) {
+                      <li class="answers__item">{{ text }}</li>
+                    }
+                  </ul>
+                } @else {
+                  <p class="empty-note">尚無作答資料。</p>
+                }
+              }
+
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (statError) {
+      <div class="tab-state" role="alert">
+        <h2>讀不到統計資料</h2>
+        <p>{{ statError }}</p>
+        <a class="btn" routerLink="/home/surveyMenu">回問卷清單</a>
+      </div>
+    } @else {
+      <p class="tab-state">載入中…</p>
+    }</mat-tab>
+    <mat-tab label="人員">
+
+      @if (subError) {
+        <div class="tab-state" role="alert">
+          <h2>讀不到作答紀錄</h2>
+          <p>{{ subError }}</p>
+        </div>
+      } @else if (!quizSubmissions) {
+        <p class="tab-state">載入中…</p>
+      } @else {
+      <section class="submission-ledger" aria-label="填答人員與作答紀錄">
+        <header class="submission-ledger__header">
+          <div>
+            <p class="submission-ledger__eyebrow">作答名冊</p>
+            <h2>{{ quizSubmissions.length }} 位填答者</h2>
+          </div>
+          <p>展開即可查看逐題回覆</p>
+        </header>
+
+        <mat-accordion class="submission-accordion">
+          @for (s of quizSubmissions; track s.responseId) {
+            <mat-expansion-panel class="submission-panel">
+              <mat-expansion-panel-header>
+                <span class="submission-person__mark" aria-hidden="true">{{ initialOf(s.userEmail) }}</span>
+                <span class="submission-person">
+                  <span class="submission-person__email">{{ s.userEmail }}</span>
+                  <span class="submission-person__meta">
+                    <time [attr.datetime]="s.submittedAt">{{ s.submittedAt | date:'yyyy/MM/dd HH:mm' }}</time>
+                    <span aria-hidden="true">·</span>
+                    {{ s.answers.length }} 題回覆
+                  </span>
+                </span>
+                <span class="submission-state">已提交</span>
+              </mat-expansion-panel-header>
+
+              <div class="submission-answers">
+                @for (a of s.answers; track a.questionId) {
+                  <article class="submission-answer">
+                    <span class="submission-answer__number">
+                      {{ a.questionNum < 10 ? '0' + a.questionNum : a.questionNum }}
+                    </span>
+                    <div>
+                      <h3>{{ a.questionTitle }}</h3>
+                      <p [class.submission-answer__value--empty]="isUnanswered(a)">
+                        {{ answerText(a) || '未作答' }}
+                      </p>
+                    </div>
+                  </article>
+                }
+              </div>
+            </mat-expansion-panel>
+          } @empty {
+            <p class="tab-state">這份問卷還沒有人作答。</p>
+          }
+        </mat-accordion>
+      </section>
+      }
+
+    </mat-tab>
+
+  </mat-tab-group>
+
+</section>
