@@ -1,0 +1,64 @@
+<h1 class="mb-3 text-lg font-bold">問卷清單</h1>
+
+<section class="card mb-4 space-y-3">
+  <div>
+    <label class="field-label" for="survey-keyword">問卷名稱</label>
+    <input
+      id="survey-keyword"
+      class="input"
+      (keyup)="changeInput($event)"
+      (compositionend)="changeInput($event)"
+      placeholder="輸入問卷名稱搜尋"
+    >
+  </div>
+
+  <div [formGroup]="range">
+    <span class="field-label">開始日期範圍</span>
+    <div class="flex items-center gap-2">
+      <input class="input min-w-0" type="date" formControlName="start" aria-label="開始日期">
+      <span class="text-gray-500">~</span>
+      <input class="input min-w-0" type="date" formControlName="end" aria-label="結束日期">
+    </div>
+  </div>
+</section>
+
+<p class="mb-2 text-sm text-gray-600">共 {{ filteredTotal }} 份問卷</p>
+
+<div class="mb-3 flex rounded-md border border-gray-300 bg-white text-sm" role="tablist">
+  @for (tab of tabs; track tab.key) {
+    <button
+      type="button"
+      role="tab"
+      class="flex-1 py-2"
+      [class.bg-green-700]="activeTab === tab.key"
+      [class.text-white]="activeTab === tab.key"
+      [attr.aria-selected]="activeTab === tab.key"
+      (click)="selectTab(tab.key)"
+    >
+      {{ tab.label }}（{{ rows[tab.key].length }}）
+    </button>
+  }
+</div>
+
+@if (currentRows.length === 0) {
+  <p class="text-gray-500">沒有符合條件的問卷。</p>
+} @else {
+  <ul class="space-y-3">
+    @for (survey of pagedRows; track survey.id) {
+      <li class="card flex items-start justify-between gap-3">
+        <div>
+          <p class="text-xs text-gray-500">#{{ survey.id }} · {{ survey.creatorName }}</p>
+          <h3 class="font-medium">{{ survey.title }}</h3>
+          <p class="mt-1 text-sm text-gray-500">{{ survey.startDate }} ~ {{ survey.endDate }}</p>
+        </div>
+        @if (showStat) {
+          <a class="btn-secondary shrink-0 px-3 py-1.5 text-sm" [routerLink]="['/home/statistics', survey.id]">
+            統計
+          </a>
+        }
+      </li>
+    }
+  </ul>
+
+  <app-pager [total]="currentRows.length" [pageSize]="pageSize" [page]="page" (pageChange)="page = $event"/>
+}

@@ -10,12 +10,13 @@ import {
   SurveyQuestion,
   SurveyRequest, UserResponse
 } from '../@model/survey-model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyApiService {
-  private readonly baseUrl = 'http://localhost:8080/api/quiz';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {
   }

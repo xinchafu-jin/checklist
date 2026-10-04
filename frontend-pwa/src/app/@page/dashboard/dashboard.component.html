@@ -1,0 +1,45 @@
+<section class="card mb-4 flex items-center justify-between">
+  <div>
+    <h1 class="text-lg font-bold">您好，{{ userName }}</h1>
+    <p class="text-sm text-gray-600">從待辦問卷開始今天的工作。</p>
+  </div>
+  <p class="text-right text-sm text-gray-600">
+    尚未作答<br>
+    <strong class="text-2xl text-green-800">{{ answerable.length }}</strong> 份
+  </p>
+</section>
+
+@if (loadError) {
+  <div class="card text-red-600" role="alert">
+    <h2 class="font-bold">讀不到問卷資料</h2>
+    <p>{{ loadError }}</p>
+  </div>
+} @else if (!loaded) {
+  <p class="text-gray-500">載入中…</p>
+} @else {
+  <h2 class="mb-2 font-bold">待作答問卷</h2>
+
+  @if (answerable.length === 0) {
+    <p class="text-gray-500">目前沒有進行中的問卷。</p>
+  } @else {
+    <ul class="space-y-3">
+      @for (survey of pagedSurveys; track survey.id) {
+        <li class="card">
+          <h3 class="font-medium">{{ survey.title }}</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            {{ survey.creatorName }} 發布 · 截止 {{ survey.endDate }}
+          </p>
+          <a
+            class="btn-primary mt-3 w-full"
+            [attr.aria-label]="'前往作答：' + survey.title"
+            [routerLink]="['/home/fill-in', survey.id]"
+          >
+            前往作答
+          </a>
+        </li>
+      }
+    </ul>
+
+    <app-pager [total]="answerable.length" [pageSize]="pageSize" [page]="page" (pageChange)="page = $event"/>
+  }
+}

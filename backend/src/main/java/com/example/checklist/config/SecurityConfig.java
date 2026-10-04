@@ -39,9 +39,10 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // 允許 Angular 開發伺服器
+        // 允許 Angular 開發伺服器：4200 後台、4201 前台 PWA
         config.setAllowedOrigins(List.of(
-                "http://localhost:4200"
+                "http://localhost:4200",
+                "http://localhost:4201"
         ));
 
         // 允許的 HTTP 方法

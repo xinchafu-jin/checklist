@@ -1,0 +1,81 @@
+@if (survey) {
+  <header class="mb-4">
+    <p class="text-sm text-gray-500">作答</p>
+    <h1 class="text-xl font-bold">{{ survey.title }}</h1>
+    <p class="mt-1 text-gray-600">{{ survey.description }}</p>
+    <p class="mt-2 text-sm text-gray-500">
+      期間 {{ survey.startDate }} — {{ survey.endDate }} · 共 {{ (survey.questions ?? []).length }} 題
+    </p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="subForm()">
+    <div formArrayName="answers" class="space-y-3">
+      @for (q of survey.questions ?? []; track q.id; let qi = $index) {
+        <section class="card" [formGroupName]="qi" [class.border-red-400]="showError(qi)">
+          <h2 class="mb-3 font-medium">
+            {{ q.questionNum }}. {{ q.title }}
+            @if (q.isRequired) {
+              <span class="ml-1 rounded bg-red-50 px-1.5 py-0.5 text-xs text-red-600">必填</span>
+            }
+          </h2>
+
+          @if (q.type === "TEXT") {
+            <input type="text" class="input" formControlName="ansText" placeholder="輸入你的回答"/>
+          }
+
+          @if (q.type === "SINGLE") {
+            <div class="space-y-2">
+              @for (opt of q.options; track opt.id) {
+                <label class="flex items-center gap-3 rounded-md border border-gray-200 px-3 py-2.5 has-checked:border-green-700 has-checked:bg-green-50">
+                  <input type="radio" class="size-4 accent-green-700" formControlName="singleOption" [value]="opt.id"/>
+                  <span>{{ opt.optionText }}</span>
+                </label>
+              }
+            </div>
+          }
+
+          @if (q.type === "MULTI") {
+            <div class="space-y-2" formArrayName="optionChecks">
+              @for (opt of q.options; track opt.id; let oi = $index) {
+                <label class="flex items-center gap-3 rounded-md border border-gray-200 px-3 py-2.5 has-checked:border-green-700 has-checked:bg-green-50">
+                  <input type="checkbox" class="size-4 accent-green-700" [formControlName]="oi"/>
+                  <span>{{ opt.optionText }}</span>
+                </label>
+              }
+              <p class="text-sm text-gray-500">可複選</p>
+            </div>
+          }
+
+          @if (showError(qi)) {
+            <p class="field-error" role="alert">此題必填</p>
+          }
+        </section>
+      } @empty {
+        <p class="text-gray-500">這份問卷還沒有題目。</p>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <p class="field-error mt-3" role="alert">{{ errorMessage }}</p>
+    }
+
+    <footer class="mt-4">
+      <p class="mb-2 text-center text-sm text-gray-500">送出後將無法修改。</p>
+      <button type="submit" class="btn-primary w-full" [disabled]="isSubmitting">
+        {{ isSubmitting ? "送出中" : "送出問卷" }}
+      </button>
+    </footer>
+  </form>
+
+  @if (preview) {
+    <app-answer-preview [data]="preview" (confirmed)="confirmPreview()" (cancelled)="closePreview()"/>
+  }
+} @else if (loadError) {
+  <div class="card space-y-3" role="alert">
+    <h1 class="text-lg font-bold">找不到這份問卷</h1>
+    <p class="text-gray-600">{{ loadError }}</p>
+    <a class="btn-primary" routerLink="/home/survey-menu">回問卷清單</a>
+  </div>
+} @else {
+  <p class="text-gray-500" aria-busy="true">載入中…</p>
+}

@@ -13,9 +13,6 @@ import {RegisterComponent} from './@page/register/register.component';
 import {ResetPasswordComponent} from './@page/reset-password/reset-password.component';
 import {authGuard} from './@guard/auth.guard';
 import {adminGuard} from './@guard/admin.guard';
-import {FrontHomeComponent} from './front/@page/front-home/front-home.component';
-import {FrontSurveymenuComponent} from './front/@page/front-surveymenu/front-surveymenu.component';
-import {FrontDashboardComponent} from './front/@page/front-dashboard/front-dashboard.component';
 
 
 export const routes: Routes = [
@@ -38,20 +35,9 @@ export const routes: Routes = [
       {path: 'mySurvey', component: MySurveyComponent, canActivate: [adminGuard]},
       {path: 'customSurvey', component: CustomSurveyComponent, canActivate: [adminGuard]},
       {path: 'statistics/:id', component: StatisticsComponent, canActivate: [adminGuard]},
-      {path: 'fillIn/:id', component: FillInComponent},
+      {path: 'fillIn/:id', component: FillInComponent, canActivate: [adminGuard]},
       {path: 'edit/:id', component: EditComponent, canActivate: [adminGuard]}
     ],
-  },
-  {
-    path: 'front-home', component: FrontHomeComponent,
-    canActivate: [authGuard],
-    children: [
-      // adminGuard 把 USER 彈回來時只會給 /front-home，沒有這條就是一片空白
-      {path: '', redirectTo: 'front-dashboard', pathMatch: 'full'},
-      {path: 'front-surveymenu', component: FrontSurveymenuComponent},
-      {path: 'front-dashboard', component: FrontDashboardComponent},
-      {path: 'statistics/:id', component: StatisticsComponent}
-    ]
   },
   // release 不再有自己的路由 —— 它改成 my-survey 開的 Material Dialog
 ];

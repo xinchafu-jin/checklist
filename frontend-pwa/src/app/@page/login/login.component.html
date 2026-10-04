@@ -1,0 +1,49 @@
+<main class="mx-auto flex min-h-screen max-w-md flex-col justify-center p-4">
+  <h1 class="mb-1 text-2xl font-bold">Jin Survey</h1>
+  <p class="mb-6 text-gray-600">請登入你的帳號。</p>
+
+  <form class="card space-y-4" [formGroup]="form" (ngSubmit)="login()" novalidate>
+    <div>
+      <label class="field-label" for="login-account">電子郵件</label>
+      <input
+        id="login-account"
+        class="input"
+        type="email"
+        formControlName="account"
+        autocomplete="username"
+        placeholder="name@example.com"
+      >
+      @if (form.controls.account.invalid && form.controls.account.touched) {
+        <p class="field-error">請輸入電子郵件。</p>
+      }
+    </div>
+
+    <div>
+      <label class="field-label" for="login-password">密碼</label>
+      <input
+        id="login-password"
+        class="input"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        placeholder="請輸入密碼"
+      >
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <p class="field-error">請輸入密碼。</p>
+      }
+    </div>
+
+    @if (loginError) {
+      <p class="field-error" role="alert">{{ loginError }}</p>
+    }
+
+    <button class="btn-primary w-full" type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? '登入中..' : '登入' }}
+    </button>
+
+    <div class="flex justify-center gap-4 text-sm">
+      <a class="link" routerLink="/reset-password">忘記密碼</a>
+      <a class="link" routerLink="/register">建立帳號</a>
+    </div>
+  </form>
+</main>

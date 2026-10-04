@@ -1,0 +1,28 @@
+<div class="fixed inset-0 z-20 flex items-end justify-center bg-black/40 sm:items-center" role="dialog" aria-modal="true"
+     aria-labelledby="preview-title">
+  <div class="flex max-h-[80vh] w-full max-w-lg flex-col rounded-t-xl bg-white sm:rounded-xl">
+    <div class="overflow-y-auto p-4">
+      <p class="text-sm text-gray-500">送出前確認</p>
+      <h2 id="preview-title" class="text-lg font-bold">{{ data.surveyTitle }}</h2>
+      <p class="mb-3 text-sm text-red-600">送出後就不能再修改，也不能重複作答。</p>
+
+      <ol class="divide-y divide-gray-100">
+        @for (item of data.items; track item.questionNum) {
+          <li class="py-2">
+            <p class="text-sm text-gray-600">{{ item.questionNum }}. {{ item.title }}</p>
+            @if (item.answered) {
+              <p class="font-medium">{{ item.answerText }}</p>
+            } @else {
+              <p class="text-gray-400">未作答</p>
+            }
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="flex gap-2 border-t border-gray-200 p-4">
+      <button type="button" class="btn-secondary flex-1" (click)="cancelled.emit()">返回修改</button>
+      <button type="button" class="btn-primary flex-1" (click)="confirmed.emit()">確認送出</button>
+    </div>
+  </div>
+</div>

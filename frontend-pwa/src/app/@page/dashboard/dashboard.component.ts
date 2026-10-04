@@ -1,31 +1,20 @@
-import {Component, inject, ViewChild} from '@angular/core';
-import {MatButtonModule} from "@angular/material/button";
-import {
-  MatTableDataSource,
-  MatTableModule
-} from "@angular/material/table";
-import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
+import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {statusAdj, Survey} from '../../../@model/survey-model';
-import {SurveyApiService} from '../../../@service/survey-api.service';
-import {CurrentUserService} from '../../../@service/current-user.service';
 import {forkJoin, Observable, of} from 'rxjs';
+import {statusAdj, Survey} from '../../@model/survey-model';
+import {SurveyApiService} from '../../@service/survey-api.service';
+import {CurrentUserService} from '../../@service/current-user.service';
+import {PagerComponent} from '../../@component/pager/pager.component';
 
 @Component({
-  selector: 'app-front-dashboard',
-  imports: [
-    MatButtonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    RouterLink,
-  ],
-  templateUrl: './front-dashboard.component.html',
-  styleUrl: './front-dashboard.component.scss'
+  selector: 'app-dashboard',
+  imports: [RouterLink, PagerComponent],
+  templateUrl: './dashboard.component.html',
 })
-export class FrontDashboardComponent {
+export class DashboardComponent implements OnInit {
 
   survey: Survey[] = [];
-  quantity: number = 0;
+  answerable: Survey[] = [];
 
   // AuthGuard 保證進得來就一定登入過，所以這裡取一次就夠，不用每次變更偵測都讀
   userName = '';
@@ -33,20 +22,20 @@ export class FrontDashboardComponent {
   loaded = false;         // 資料已到
   loadError = '';         // 載入失敗，整頁的數字都不可信
 
-  displayedColumns: string[] = ['survey'];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  dataSource = new MatTableDataSource<Survey>([]);
+  readonly pageSize = 3;
+  page = 0;
 
   private surveyApi = inject(SurveyApiService);
   private currentUser = inject(CurrentUserService);
 
+  get pagedSurveys(): Survey[] {
+    const start = this.page * this.pageSize;
+    return this.answerable.slice(start, start + this.pageSize);
+  }
+
   ngOnInit() {
     this.userName = this.currentUser.get()?.name ?? '';
     this.loadSurveys();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   loadSurveys() {
@@ -83,8 +72,7 @@ export class FrontDashboardComponent {
 
   updateDashBoardData(answeredIds: Set<number>) {
     /*
-     * 前台只關心「還等著我填的問卷」，不做任何統計 ——
-     * 那八張卡是管理視角，USER 既看不到別人的草稿也不建問卷。
+     * 前台只關心「還等著我填的問卷」，不做任何統計。
      *
      * 收進清單的條件有兩個：
      * 狀態是「進行中」（尚未開始的還不能填、已結束的填不了），
@@ -103,7 +91,7 @@ export class FrontDashboardComponent {
     }
 
     // 清單與數字用同一份資料，才不會出現「尚未作答 43 份」但只列出 5 筆
-    this.dataSource.data = answerable;
-    this.quantity = answerable.length;
+    this.answerable = answerable;
+    this.page = 0;
   }
 }

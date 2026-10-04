@@ -5,7 +5,7 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {CurrentUserService} from '../../@service/current-user.service';
 import {SurveyApiService} from '../../@service/survey-api.service';
-import {LoginRequest, UserRole} from '../../@model/survey-model';
+import {LoginRequest} from '../../@model/survey-model';
 
 @Component({
   selector: 'app-login',
@@ -39,12 +39,17 @@ export class LoginComponent {
     this.isSubmitting = true;
     this.surveyApiService.login(req).subscribe({
       next:(res)=>{
-        this.currentUserService.set(res);
-        if(res.role === 'ADMIN'){
-          this.router.navigate(['/home/dashBoard']);
-        }else {
-          this.router.navigate(['/front-home/front-dashboard'])
+        /*
+         * 後台只給 ADMIN。前台已拆到 frontend-pwa，
+         * USER 不寫進 sessionStorage —— 寫了也只會被 adminGuard 擋回登入頁。
+         */
+        if (res.role !== 'ADMIN') {
+          this.isSubmitting = false;
+          this.loginError = '此帳號沒有後台權限，請改用現場檢點 App 登入。';
+          return;
         }
+        this.currentUserService.set(res);
+        this.router.navigate(['/home/dashBoard']);
       },
       error:(err)=>{
         this.isSubmitting= false;
