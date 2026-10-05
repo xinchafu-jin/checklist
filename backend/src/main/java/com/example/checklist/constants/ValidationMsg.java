@@ -153,6 +153,9 @@ public class ValidationMsg {
     /** 前端傳入系統不支援的題型；%s 填入收到的字串。 */
     public static final String QUESTION_TYPE_INVALID = "Invalid question type: %s";
 
+    /** 前端傳入系統不支援的檢點項目類型；%s 填入收到的字串。 */
+    public static final String ITEM_TYPE_INVALID = "不支援的檢點項目類型：%s";
+
     // ==================== 填寫問卷業務規則訊息 ====================
 
     /** 問卷尚未發布，不能填答。 */
