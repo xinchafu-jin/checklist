@@ -170,11 +170,6 @@ public class QuizController {
         quizService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("註冊成功"));
     }
-    @Transactional(readOnly = true)
-    @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(quizService.login(loginRequest));
-    }
     @Transactional
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse> resetPassword (@Valid @RequestBody ResetPasswordRequest resetPasswordRequest){

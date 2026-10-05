@@ -22,12 +22,13 @@ import org.springframework.web.servlet.resource.NoResourceFoundException; // 網
  *
  * <ul>
  *     <li>400：使用者輸入或業務規則不允許，訊息直接給使用者看</li>
+ *     <li>401：身分已經失效，例如帳號在登入後被停用</li>
  *     <li>404：找不到資料或網址</li>
  *     <li>409：違反資料庫約束，例如同一期重複送出檢點</li>
  *     <li>500：程式沒預期到的錯誤，只回固定訊息，細節寫進 log</li>
  * </ul>
  *
- * <p>401（沒登入）、403（沒權限）由 Spring Security 在進到 Controller 之前處理，見 SecurityConfig。</p>
+ * <p>沒帶 token、token 無效的 401 與沒權限的 403，由 Spring Security 在進到 Controller 之前處理，見 SecurityConfig。</p>
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -87,6 +88,17 @@ public class GlobalExceptionHandler {
             message = cause.getMessage();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(message));
+    }
+
+    /**
+     * 處理身分已經失效，例如帳號在登入後被停用。
+     *
+     * @param e UnauthorizedException
+     * @return HTTP 401 Unauthorized
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorized(UnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.failure(e.getMessage()));
     }
 
     /**

@@ -556,24 +556,6 @@ public class QuizService {
         userRepository.save(user);
     }
 
-    //登入
-    public UserResponse login(LoginRequest loginRequest) {
-        Optional<User> found = userRepository.findByEmail(loginRequest.getEmail());
-        if (found.isEmpty()) {
-            throw new IllegalArgumentException(ValidationMsg.LOGIN_FAILED);
-        }
-        User user = found.get();
-        boolean ok = encoder.matches(loginRequest.getPassword(), user.getPassword());
-        if (!ok) {
-            throw new IllegalArgumentException(ValidationMsg.LOGIN_FAILED);
-        }
-        UserResponse userResponse = new UserResponse();
-        userResponse.setEmail(user.getEmail());
-        userResponse.setName(user.getName());
-        userResponse.setRole(user.getRole());
-        return userResponse;
-    }
-
     //忘記密碼
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         Optional<User> found = userRepository.findByEmail(resetPasswordRequest.getEmail());

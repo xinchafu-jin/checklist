@@ -153,6 +153,18 @@ public class ValidationMsg {
     /** 前端傳入系統不支援的題型；%s 填入收到的字串。 */
     public static final String QUESTION_TYPE_INVALID = "Invalid question type: %s";
 
+    // ==================== 登入 ====================
+
+    public static final String EMPLOYEE_NO_REQUIRED = "請輸入工號。";
+
+    public static final String LOGIN_PASSWORD_REQUIRED = "請輸入密碼。";
+
+    /** 工號不存在、帳號停用、密碼錯誤都回這一句，別人才無法從登入頁試出哪些工號存在。 */
+    public static final String AUTH_LOGIN_FAILED = "工號或密碼錯誤。";
+
+    /** token 還有效，但帳號已被停用或刪除。 */
+    public static final String AUTH_ACCOUNT_UNAVAILABLE = "帳號已停用或不存在，請重新登入。";
+
     /** 前端傳入系統不支援的檢點項目類型；%s 填入收到的字串。 */
     public static final String ITEM_TYPE_INVALID = "不支援的檢點項目類型：%s";
 
