@@ -112,13 +112,13 @@
 
 .date-range-field {
   width: 100%;
-  --mdc-outlined-text-field-container-shape: 2px;
-  --mdc-outlined-text-field-outline-color: var(--app-line-strong);
-  --mdc-outlined-text-field-hover-outline-color: var(--app-forest);
-  --mdc-outlined-text-field-focus-outline-color: var(--app-forest);
-  --mdc-outlined-text-field-input-text-color: var(--app-ink);
-  --mdc-outlined-text-field-label-text-color: var(--app-muted);
-  --mdc-outlined-text-field-focus-label-text-color: var(--app-forest);
+  --mat-form-field-outlined-container-shape: 2px;
+  --mat-form-field-outlined-outline-color: var(--app-line-strong);
+  --mat-form-field-outlined-hover-outline-color: var(--app-forest);
+  --mat-form-field-outlined-focus-outline-color: var(--app-forest);
+  --mat-form-field-outlined-input-text-color: var(--app-ink);
+  --mat-form-field-outlined-label-text-color: var(--app-muted);
+  --mat-form-field-outlined-focus-label-text-color: var(--app-forest);
   --mat-form-field-container-height: 56px;
   --mat-form-field-container-vertical-padding: 16px;
   --mat-form-field-subscript-text-text-color: var(--app-muted);

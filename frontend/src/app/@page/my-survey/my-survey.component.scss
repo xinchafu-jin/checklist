@@ -205,14 +205,14 @@
 }
 
 .survey-tabs {
-  --mdc-tab-indicator-active-indicator-color: var(--app-clay);
-  --mat-tab-header-active-label-text-color: var(--app-forest);
-  --mat-tab-header-inactive-label-text-color: var(--app-muted);
-  --mat-tab-header-active-hover-label-text-color: var(--app-forest);
-  --mat-tab-header-inactive-hover-label-text-color: var(--app-ink);
-  --mat-tab-header-active-focus-label-text-color: var(--app-forest);
-  --mat-tab-header-inactive-focus-label-text-color: var(--app-ink);
-  --mat-tab-header-divider-color: var(--app-line);
+  --mat-tab-active-indicator-color: var(--app-clay);
+  --mat-tab-active-label-text-color: var(--app-forest);
+  --mat-tab-inactive-label-text-color: var(--app-muted);
+  --mat-tab-active-hover-label-text-color: var(--app-forest);
+  --mat-tab-inactive-hover-label-text-color: var(--app-ink);
+  --mat-tab-active-focus-label-text-color: var(--app-forest);
+  --mat-tab-inactive-focus-label-text-color: var(--app-ink);
+  --mat-tab-divider-color: var(--app-line);
 }
 
 .tab-panel {

@@ -1,0 +1,8 @@
+/*
+ * 自己的全域樣式（SCSS）。
+ *
+ * - 不要在這裡用 @apply、@theme 這些 Tailwind 語法，那些放 tailwind.css
+ * - 顏色用 spartan 主題的 CSS 變數，例如 var(--primary)，換主題才會一起變
+ * - 拆檔用 @use / @forward，不要用 @import
+ * - 這裡的樣式不在 CSS layer 裡，會蓋過 Tailwind 的 class
+ */
